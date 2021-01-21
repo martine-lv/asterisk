@@ -70,14 +70,13 @@ esac
 
 
 
-整理解析：
+整体解析：
 if 里面的测试条件就是测试当前的shell是不是zsh，如果是的话，就执行Then后面的命令，
 emulate英文意思是仿真、模拟，所以emulate是zsh中的一个命令，用来模仿别的shell的默认环境变量
 而NULLCMD=：是将NULLCMD这个环境变量的值设置为:，这样子就跟bash一样了
 参考这个文档:http://liuxiang.logdown.com/posts/248453-zsh-you-dont-know-those-things-001-nullcmd
 else里面的case就是测试bash是否有特性posix，有则打开它，无则什么都不做
-
-
+##########################################################################################################
 
 
 
@@ -88,15 +87,25 @@ export as_nl
 as_echo='\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
 as_echo=$as_echo$as_echo$as_echo$as_echo$as_echo
 as_echo=$as_echo$as_echo$as_echo$as_echo$as_echo$as_echo
+
+#############################################################
+上面的代码就是给as_echo赋值，在屏幕上打印它的值的时候就可以打印很多\
+#############################################################
 # Prefer a ksh shell builtin over an external printf program on Solaris,
 # but without wasting forks for bash or zsh.
 if test -z "$BASH_VERSION$ZSH_VERSION" \
     && (test "X`print -r -- $as_echo`" = "X$as_echo") 2>/dev/null; then
   as_echo='print -r --'
   as_echo_n='print -rn --'
+ #############################################################
+ 这里测试当前的shell是否不是zsh和bash，都不是才会执行Then后面的命令
+ #############################################################
 elif (test "X`printf %s $as_echo`" = "X$as_echo") 2>/dev/null; then
   as_echo='printf %s\n'
   as_echo_n='printf %s'
+ ###################################################################
+ 因为我使用的是bash，所以符合这一个测试条件，as_echo和as_echo_n被重新赋值
+ ###################################################################
 else
   if test "X`(/usr/ucb/echo -n -n $as_echo) 2>/dev/null`" = "X-n $as_echo"; then
     as_echo_body='eval /usr/ucb/echo -n "$1$as_nl"'
@@ -119,6 +128,15 @@ else
   as_echo='sh -c $as_echo_body as_echo'
 fi
 
+############################################################################################
+1、test -z 表示字符串长度为0则为真
+2、printf是linux的一个命令，它可以设置一定的格式进行输出%s表示此处用字符串替代%d表示用整数替代
+  
+整体分析：
+这一段代码就是为了根据当前的shell是什么shell来给as_echo和as_echo_n赋值
+############################################################################################
+
+
 # The user is always right.
 if test "${PATH_SEPARATOR+set}" != set; then
   PATH_SEPARATOR=:
@@ -127,6 +145,9 @@ if test "${PATH_SEPARATOR+set}" != set; then
       PATH_SEPARATOR=';'
   }
 fi
+#########################################################
+bash 符合上面的条件测试，所以执行了后面的内容
+#########################################################
 
 
 # IFS
@@ -151,6 +172,8 @@ IFS=$as_save_IFS
 
      ;;
 esac
+
+
 # We did not find ourselves, most probably we were run as `sh COMMAND'
 # in which case we are not to be found in the path.
 if test "x$as_myself" = x; then
