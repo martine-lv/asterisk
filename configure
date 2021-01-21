@@ -18,6 +18,8 @@
 
 # Be more Bourne compatible
 DUALCASE=1; export DUALCASE # for MKS sh
+
+
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then :
   emulate sh
   NULLCMD=:
@@ -33,6 +35,50 @@ else
      ;;
 esac
 fi
+######################################################################################
+下面对上面这段代码进行解析：
+1、首先是bash脚本中if的语法
+if test -n '';then
+  echo 'it is null!'
+else
+  echo 'it is not null!'
+fi
+2、test是一个比较工具，它返回布尔值，True或者False，-n表示要比较的是一个字符串，当这个字符串是空时，
+test返回False，不为空则返回True
+3、&&是逻辑比较与，当两个条件都为真才为真
+4、>是重定向符号，表示将标准输出输出到指定位置
+5、/dev/null相当于是一个垃圾桶，写入它的东西都不会被保存，所以当你不想要保存的时候就重定向给它
+6、linux中的数据流有三种：stdin是0表示标准输入，stdout是1表示标准输出,stderr是2表示标准错误输出
+这里用2>&1表示将标准错误输出重定向到标准输出，这是因为前面的>/dev/null这个>是重定向标准输出，
+而我们这里希望的是将错误消息也不要打印出来，所以加了2>&1
+7、bash脚本中case的语法
+IsTrue=1
+case $IsTrue in 
+ 1)
+echo 'this is 1';;
+ 2)
+echo 'this is 2';;
+ *)
+echo 'this is not 1 or 2';;
+esac
+8、``符号与$()符号的效果一样，它们先执行它们里面的命令，然后将值返回跟别的字符串组合在一起或者组成另一个命令
+如echo today is `date`
+ echo today is $(date)
+没有它们的话，你得到的仅仅是today is date,date不会被当做命令看
+参考文档：https://www.cnblogs.com/chengd/p/7803664.html
+9、set -o 显示的是bash的一些特性，如posix，set -o posix就是将该特性开启
+
+
+
+整理解析：
+if 里面的测试条件就是测试当前的shell是不是zsh，如果是的话，就执行Then后面的命令，
+emulate英文意思是仿真、模拟，所以emulate是zsh中的一个命令，用来模仿别的shell的默认环境变量
+而NULLCMD=：是将NULLCMD这个环境变量的值设置为:，这样子就跟bash一样了
+参考这个文档:http://liuxiang.logdown.com/posts/248453-zsh-you-dont-know-those-things-001-nullcmd
+else里面的case就是测试bash是否有特性posix，有则打开它，无则什么都不做
+
+
+
 
 
 as_nl='
